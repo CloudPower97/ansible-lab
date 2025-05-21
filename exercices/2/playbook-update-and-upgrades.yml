@@ -1,0 +1,26 @@
+- hosts: targets
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+    - name: Dist-upgrade all packages
+      apt:
+        upgrade: dist
+    - name: Install unattended-upgrades
+      apt:
+        name:
+          - unattended-upgrades
+          - apt-listchanges
+        state: present
+        update_cache: yes
+    - name: Configure automatic security upgrades
+      copy:
+        dest: /etc/apt/apt.conf.d/50unattended-upgrades
+        content: |
+          Unattended-Upgrade::Allowed-Origins {
+            "${distro_id}:${distro_codename}-security";
+          };
+          Unattended-Upgrade::Automatic-Reboot "true";
+    - name: Enable unattended-upgrades
+      command: dpkg-reconfigure --frontend noninteractive unattended-upgrades

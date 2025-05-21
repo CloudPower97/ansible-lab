@@ -1,0 +1,30 @@
+services:
+  control:
+    build: ./control
+    volumes:
+      - ./ansible:/ansible
+    networks:
+      lab-net:
+        ipv4_address: 172.20.0.10
+  target1:
+    image: ubuntu:22.04
+    hostname: target1
+    privileged: true
+    command: sleep infinity
+    networks:
+      lab-net:
+        ipv4_address: 172.20.0.11
+  target2:
+    image: ubuntu:22.04
+    hostname: target2
+    privileged: true
+    command: sleep infinity
+    networks:
+      lab-net:
+        ipv4_address: 172.20.0.12
+networks:
+  lab-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

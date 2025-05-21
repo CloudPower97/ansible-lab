@@ -1,0 +1,4 @@
+- hosts: targets
+  tasks:
+    - name: Ping all targets
+      ping:

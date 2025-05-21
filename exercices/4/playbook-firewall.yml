@@ -1,0 +1,19 @@
+- hosts: targets
+  become: yes
+  tasks:
+    - name: Install UFW
+      apt:
+        name: ufw
+        state: present
+        update_cache: yes
+    - name: Allow SSH
+      ufw:
+        rule: allow
+        port: "22"
+    - name: Deny all other traffic
+      ufw:
+        default: deny
+    - name: Enable UFW
+      ufw:
+        state: enabled
+        enabled: yes
