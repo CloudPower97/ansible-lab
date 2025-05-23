@@ -1,0 +1,22 @@
+- hosts: targets
+  become: yes
+  vars:
+    lab_user: labuser
+    lab_pass: "$6$rounds=4096$saltsalt$..." # encrypted 'P@ssw0rd123!'
+  tasks:
+    - name: Ensure 'admins' group exists
+      group:
+        name: admins
+        state: present
+    - name: Create lab user
+      user:
+        name: "{{ lab_user }}"
+        password: "{{ lab_pass }}"
+        groups: admins
+        shell: /bin/bash
+    - name: Grant passwordless sudo for admins
+      copy:
+        dest: /etc/sudoers.d/admins
+        content: |
+          %admins ALL=(ALL) NOPASSWD:ALL
+        mode: "0440"
