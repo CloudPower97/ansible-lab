@@ -1,0 +1,20 @@
+- hosts: targets
+  become: yes
+  tasks:
+    - name: Install fail2ban
+      apt:
+        name: fail2ban
+        state: present
+        update_cache: yes
+    - name: Configure SSH jail
+      copy:
+        dest: /etc/fail2ban/jail.d/ssh.local
+        content: |
+          [sshd]
+          enabled = true
+          port    = ssh
+          maxretry = 3
+    - name: Restart fail2ban
+      service:
+        name: fail2ban
+        state: restarted
