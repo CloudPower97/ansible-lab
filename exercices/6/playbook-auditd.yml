@@ -1,0 +1,17 @@
+- hosts: targets
+  become: yes
+  tasks:
+    - name: Install auditd
+      apt:
+        name: auditd
+        state: present
+        update_cache: yes
+    - name: Add audit rule for sshd_config
+      lineinfile:
+        path: /etc/audit/audit.rules
+        line: "-w /etc/ssh/sshd_config -p wa -k sshd_config_changes"
+        insertafter: EOF
+    - name: Restart auditd service
+      service:
+        name: auditd
+        state: restarted
